@@ -2,10 +2,7 @@ import type { Metadata } from 'next'
 import {ReactNode} from "react";
 import {getServerSession} from "next-auth/next"
 import {options} from "@/app/api/auth/[...nextauth]/options";
-import {redirect} from "next/navigation";
 import Image from "next/image";
-import type {User} from "next-auth"
-import type {Session} from "next-auth"
 import LoginButton from "@/app/components/LoginButton";
 import LogoutButton from "@/app/components/LogoutButton";
 export const metadata: Metadata = {
@@ -16,13 +13,12 @@ export const metadata: Metadata = {
 interface PageProps {
     children: ReactNode
 }
+
 async function Page({ children }: PageProps) {
     const session = await getServerSession(options);
     // redirects if no session
-    console.log(session);
-    if(!session) {
-        redirect("/api/auth/signin?callbackUrl=/dashboard")
-    }
+    console.log("SESSION:",session);
+
 
     return (
         <>

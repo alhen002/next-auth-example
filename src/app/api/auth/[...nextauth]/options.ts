@@ -4,23 +4,23 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { GithubProfile } from "next-auth/providers/github";
 import {prisma} from "../../../../../lib/prisma";
 import {compare} from "bcrypt";
+import {PrismaAdapter} from "@auth/prisma-adapter";
+
 export const options : NextAuthOptions = {
     providers: [
-        GitHubProvider({
-            // TODO: FEHLER FINDEN IM TYPE
+         /*GitHubProvider({
             profile(profile: GithubProfile) {
                 console.log(profile)
                 return {
                     id: profile.id.toString(),
                     name: profile.name ?? "",
                     email: profile.email ?? "",
-                    role: "USER",
-                    randomKey: "hey cool"
+                    randomKey: "hey cool",
                 }
             },
             clientId: process.env.GITHUB_CLIENT_ID as string,
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-        }),
+        }), */
         CredentialsProvider({
             name: "Credentials",
             credentials: {
@@ -29,12 +29,16 @@ export const options : NextAuthOptions = {
             },
             async authorize(credentials, req) {
 
-                if (!credentials?.email || !credentials?.password) {return null}
-
+                if (!credentials?.email || !credentials?.password) {
+                    throw new Error("Invalid credentials");
+                }
                 // Add logic here to look up the user from the credentials supplied
                 const user = await prisma.user.findUnique({
                     where: {
                         email: credentials?.email
+                    },
+                    include: {
+                        role: true
                     }
                 })
 
@@ -46,36 +50,31 @@ export const options : NextAuthOptions = {
                     name: user.name,
                     email: user.email,
                     role: user.role,
-                    randomKey: "hey cool"
                 };
             }
         })
     ],
-     callbacks: {
+    callbacks: {
          async jwt({token, user}) {
-             console.log("JWT Callback", "token:",token, "user:",user)
              if (user) {
                  return {
                      ...token,
-                     id: user.id,
-                     randomKey: user.randomKey
+                     id: user.id ? user.id : token.id,
+                        role: user.role ? user.role : token.role,
                  }
              }
              return token
          },
         async session({session, token}) {
-            console.log("SESSION Callback", "session:",session, "token", token)
             return {
                 ...session,
                 user: {
                     ...session.user,
-                    id: token.id,
-                    randomKey: token.randomKey
+                    id: token.id ? token.id : session.user.id,
+                    role: token.role ? token.role : session.user.role,
                 }
             }
 
         }
-
-
     }
 }

@@ -1,36 +1,29 @@
 // ref: https://authjs.dev/getting-started/typescript#module-augmentation
 
- import {DefaultSession, DefaultUser} from "next-auth";
+
+import {DefaultSession, DefaultUser} from "next-auth";
 import {JWT, DefaultJWT} from "next-auth/jwt";
-
-
+import {Role} from ".prisma/client";
 declare module "next-auth" {
     interface Session{
         user: {
             id: string,
-            role: Role,
             name: string,
+            role: Role,
             email: string,
         }& DefaultSession["user"]
     }
-    interface User extends DefaultUser {
+    interface User extends DefaultUser{
         id: string,
-        role: "USER" | "ADMIN" | "MANAGER",
+        role: Role,
         name: string,
         email: string,
-        randomKey: string
     }
 
-    interface Role {
-        id: string,
-        name: "USER" | "ADMIN" | "MANAGER",
-
-    }
 }
 declare module "next-auth/jwt" {
     interface JWT extends DefaultJWT {
-        role: string,
+        role: Role,
         id: string
     }
 }
-

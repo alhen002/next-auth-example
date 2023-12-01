@@ -29,7 +29,8 @@ yarn-error.log*
 .env
 # vercel
 .vercel
-
+# prisma migrations
+databases/**/migrations/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
