@@ -15,5 +15,12 @@ model User {
   email    String @unique
   name     String
   password String
-  role     String @default("USER")
+  roleId   String
+  role     Role   @relation(fields: [roleId], references: [id])
+}
+
+model Role {
+  id   String @id @default(uuid())
+  name String @unique
+  User User[]
 }

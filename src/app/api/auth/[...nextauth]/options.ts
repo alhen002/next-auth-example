@@ -11,10 +11,10 @@ export const options : NextAuthOptions = {
             profile(profile: GithubProfile) {
                 console.log(profile)
                 return {
-                    ...profile,
-                    role: profile.role ?? "user",
                     id: profile.id.toString(),
-                    image: profile.avatar_url,
+                    name: profile.name ?? "",
+                    email: profile.email ?? "",
+                    role: "USER",
                     randomKey: "hey cool"
                 }
             },
