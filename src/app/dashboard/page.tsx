@@ -6,6 +6,8 @@ import {redirect} from "next/navigation";
 import Image from "next/image";
 import type {User} from "next-auth"
 import type {Session} from "next-auth"
+import LoginButton from "@/app/components/LoginButton";
+import LogoutButton from "@/app/components/LogoutButton";
 export const metadata: Metadata = {
     title: 'Dashboard',
     description: 'Dashboard',
@@ -24,11 +26,13 @@ async function Page({ children }: PageProps) {
 
     return (
         <>
-            <p>{session.user.name}</p>
+            <LoginButton />
+            <LogoutButton />
+            {/*<p>{session.user.name}</p>
             <p>{session.user.email}</p>
             <p>{session.user.id}</p>
             <Image src={session.user.image} alt={"user image"} width={100} height={100}/>
-            <p>{session.user.role}</p>
+            <p>{session.user.role}</p>*/}
         </>
 
     );
