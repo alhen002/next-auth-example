@@ -2,7 +2,7 @@ import React from 'react';
 
 function Page() {
     return (
-        <div>Denied</div>
+        <div>Access Denied</div>
     );
 }
 

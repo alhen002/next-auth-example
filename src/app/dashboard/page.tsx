@@ -5,6 +5,7 @@ import {options} from "@/app/api/auth/[...nextauth]/options";
 import Image from "next/image";
 import LoginButton from "@/app/components/LoginButton";
 import LogoutButton from "@/app/components/LogoutButton";
+import {redirect} from "next/navigation";
 export const metadata: Metadata = {
     title: 'Dashboard',
     description: 'Dashboard',
@@ -18,17 +19,17 @@ async function Page({ children }: PageProps) {
     const session = await getServerSession(options);
     // redirects if no session
     console.log("SESSION:",session);
-
-
+    if (!session) {
+        redirect("/denied")
+    }
     return (
         <>
             <LoginButton />
             <LogoutButton />
-            {/*<p>{session.user.name}</p>
+            <p>{session.user.name}</p>
             <p>{session.user.email}</p>
             <p>{session.user.id}</p>
-            <Image src={session.user.image} alt={"user image"} width={100} height={100}/>
-            <p>{session.user.role}</p>*/}
+            <p>{session.user.role.name}</p>
         </>
 
     );

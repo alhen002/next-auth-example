@@ -7,6 +7,7 @@ import {compare} from "bcrypt";
 import {PrismaAdapter} from "@auth/prisma-adapter";
 
 export const options : NextAuthOptions = {
+    //TODO: CHECK THIS WITH PRISMA ADAPTER
     providers: [
          /*GitHubProvider({
             profile(profile: GithubProfile) {
@@ -15,7 +16,6 @@ export const options : NextAuthOptions = {
                     id: profile.id.toString(),
                     name: profile.name ?? "",
                     email: profile.email ?? "",
-                    randomKey: "hey cool",
                 }
             },
             clientId: process.env.GITHUB_CLIENT_ID as string,
@@ -27,12 +27,13 @@ export const options : NextAuthOptions = {
                 email: { label: "Email", type: "email", placeholder: "hello@example.com" },
                 password: { label: "Password", type: "password"}
             },
+
             async authorize(credentials, req) {
 
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error("Invalid credentials");
                 }
-                // Add logic here to look up the user from the credentials supplied
+                // Important
                 const user = await prisma.user.findUnique({
                     where: {
                         email: credentials?.email
@@ -45,6 +46,7 @@ export const options : NextAuthOptions = {
                 if (!user) {return null}
                 const isValid = await compare(credentials.password, user.password)
                 if (!isValid) {return null}
+                //
                 return {
                     id: user.id,
                     name: user.name,
