@@ -19,17 +19,13 @@ async function Page({ children }: PageProps) {
     const session = await getServerSession(options);
     // redirects if no session
     console.log("SESSION:",session);
-    if (!session) {
-        redirect("/denied")
-    }
+
     return (
         <>
             <LoginButton />
             <LogoutButton />
-            <p>{session.user.name}</p>
-            <p>{session.user.email}</p>
-            <p>{session.user.id}</p>
-            <p>{session.user.role.name}</p>
+
+
         </>
 
     );

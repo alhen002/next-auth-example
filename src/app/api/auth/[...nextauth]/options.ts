@@ -7,20 +7,24 @@ import {compare} from "bcrypt";
 import {PrismaAdapter} from "@auth/prisma-adapter";
 
 export const options : NextAuthOptions = {
-    //TODO: CHECK THIS WITH PRISMA ADAPTER
+    adapter: PrismaAdapter(prisma),
+    session: {
+        strategy: "jwt"
+    },
     providers: [
-         /*GitHubProvider({
-            profile(profile: GithubProfile) {
-                console.log(profile)
-                return {
-                    id: profile.id.toString(),
-                    name: profile.name ?? "",
-                    email: profile.email ?? "",
-                }
-            },
+         GitHubProvider({
+             async profile(profile: GithubProfile) {
+                    return {
+                        id: profile.id.toString(),
+                        name: profile.name,
+                        email: profile.email,
+                        image: profile.avatar_url,
+                        roleId: "ba2198db-fc84-45ca-965a-388ee4ba71b9"
+                    }
+             },
             clientId: process.env.GITHUB_CLIENT_ID as string,
             clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-        }), */
+        }),
         CredentialsProvider({
             name: "Credentials",
             credentials: {
@@ -46,12 +50,10 @@ export const options : NextAuthOptions = {
                 if (!user) {return null}
                 const isValid = await compare(credentials.password, user.password)
                 if (!isValid) {return null}
-                //
                 return {
                     id: user.id,
                     name: user.name,
                     email: user.email,
-                    role: user.role,
                 };
             }
         })
@@ -62,7 +64,6 @@ export const options : NextAuthOptions = {
                  return {
                      ...token,
                      id: user.id ? user.id : token.id,
-                        role: user.role ? user.role : token.role,
                  }
              }
              return token
@@ -73,7 +74,6 @@ export const options : NextAuthOptions = {
                 user: {
                     ...session.user,
                     id: token.id ? token.id : session.user.id,
-                    role: token.role ? token.role : session.user.role,
                 }
             }
 

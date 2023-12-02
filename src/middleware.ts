@@ -11,7 +11,8 @@ export default withAuth(
         console.log(request.nextUrl.pathname)
         console.log(request.nextauth.token);
         // complex logic for many users and roles
-        if (request.nextUrl.pathname.startsWith("/extra")
+
+       /* if (request.nextUrl.pathname.startsWith("/extra")
             && request.nextauth.token?.role.name !== "admin") {
             return NextResponse.rewrite(
                 new URL("denied", request.url)
@@ -24,6 +25,7 @@ export default withAuth(
                 new URL("denied", request.url)
             )
         }
+        */
 
     },
     {
